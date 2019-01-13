@@ -147,13 +147,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_PAINT:
         {
+
 		// Prepeare for painting
 		PAINTSTRUCT ps; 
 		HDC hdc = BeginPaint(hWnd, &ps);
 
-		drawTrafficLight(hdc, 600, 100);
-		drawTrafficLight(hdc, 300, 80);
-		drawTrafficLight(hdc, 150, 200);
+		DrawRoads(hdc);
+		DrawTrafficLight(hdc, 525, 85);
+		DrawTrafficLight(hdc, 675, 225);
+
 
 		//End painting session
 		EndPaint(hWnd, &ps);

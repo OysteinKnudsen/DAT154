@@ -5,8 +5,9 @@ COLORREF colorRed = RGB(255, 0, 0);
 COLORREF colorGreen = RGB(0, 255, 0);
 COLORREF colorYellow = RGB(255, 255, 0);
 COLORREF colorBlack = RGB(0, 0, 0);
+COLORREF colorGray = RGB(169, 169, 169);
 
-void drawTrafficLight(HDC hdc, int x_pos, int y_pos)
+void DrawTrafficLight(HDC hdc, int x_pos, int y_pos)
 {
 	//Create black brush 
 	HBRUSH hBrush = CreateSolidBrush(colorBlack);
@@ -74,6 +75,34 @@ void drawTrafficLight(HDC hdc, int x_pos, int y_pos)
 	MoveToEx(hdc, rectLeft + trafficLightWidth/2, rectBottom, 0); 
 	LineTo(hdc, rectLeft + trafficLightWidth/2, rectBottom + 100);
 
+
+}
+void DrawRoads(HDC hdc) {
+	HBRUSH hBrush = CreateSolidBrush(colorGray);
+	HGDIOBJ hOrg = SelectObject(hdc, hBrush);
+	HGDIOBJ hPen;
+	HGDIOBJ hPenOld;
+	LOGBRUSH lb; 
+	lb.lbColor = colorYellow;
+	lb.lbStyle = PS_SOLID;
 	
 
+	Rectangle(hdc, 0, 250, 1500, 350); //left to right road
+	Rectangle(hdc, 550, 0, 650, 1500); //top to bottom road
+	hPen = ExtCreatePen(PS_GEOMETRIC | PS_DASH, 15, &lb, 0, NULL);
+	hPenOld = SelectObject(hdc, hPen);
+
+	//Create lines for left to right road
+	MoveToEx(hdc, 0, 300, 0);
+	LineTo(hdc, 1500, 300);
+
+	//Create lines for top to bottom road
+	MoveToEx(hdc, 600, 0, 0);
+	LineTo(hdc, 600, 1500);
+
+
+	SelectObject(hdc, hOrg);
+	DeleteObject(hOrg);
+	SelectObject(hdc, hPenOld);
+	DeleteObject(hPen);
 }
