@@ -27,12 +27,18 @@
     <ClInclude Include="DAT154_SDK_Ex1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Drawing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DAT154_SDK_Ex1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Drawing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "DAT154_SDK_Ex1.h"
+#include "Drawing.h"
 
 #define MAX_LOADSTRING 100
 
@@ -10,6 +11,7 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -99,13 +101,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
+   
    if (!hWnd)
    {
       return FALSE;
    }
 
-   ShowWindow(hWnd, nCmdShow);
+   ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
 
    return TRUE;
@@ -142,37 +144,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
     case WM_PAINT:
         {
-            PAINTSTRUCT ps;
-			
-            HDC hdc = BeginPaint(hWnd, &ps); //Gets a device context
-			HBRUSH hRedBrush = CreateSolidBrush(RGB(255,0, 0));
-			HBRUSH hGreenBrush = CreateSolidBrush(RGB(0, 255, 0));
-			HBRUSH hOrangeBrush = CreateSolidBrush(RGB(255, 127, 80));
-			HBRUSH hSilverBrush = CreateSolidBrush(RGB(192, 192, 192));
+		// Prepeare for painting
+		PAINTSTRUCT ps; 
+		HDC hdc = BeginPaint(hWnd, &ps);
 
-			HGDIOBJ hOrg = SelectObject(hdc, hSilverBrush);
-			Rectangle(hdc, 500, 100, 200, 400);
+		drawTrafficLight(hdc, 600, 100);
+		drawTrafficLight(hdc, 300, 80);
+		drawTrafficLight(hdc, 150, 200);
 
-			//Cleanup
-			SelectObject(hdc, hOrg);
-			DeleteObject(hRedBrush);
-			DeleteObject(hGreenBrush);
-            EndPaint(hWnd, &ps);
-			break;
+		//End painting session
+		EndPaint(hWnd, &ps);
+
 	}	
         
     case WM_DESTROY:
-        PostQuitMessage(0);
+		
         break;
 
 	case WM_LBUTTONDOWN:
 		MessageBox(hWnd, L"BANG", L"", MB_OK);
 
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+   
     }
+
     return 0;
 }
 
