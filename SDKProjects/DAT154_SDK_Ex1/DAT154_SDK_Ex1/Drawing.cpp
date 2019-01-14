@@ -7,8 +7,9 @@ COLORREF colorYellow = RGB(255, 255, 0);
 COLORREF colorBlack = RGB(0, 0, 0);
 COLORREF colorGray = RGB(169, 169, 169);
 
-void DrawTrafficLight(HDC hdc, int x_pos, int y_pos)
+void DrawTrafficLight(HDC hdc, int x_pos, int y_pos, bool state[] )
 {
+	
 	//Create black brush 
 	HBRUSH hBrush = CreateSolidBrush(colorBlack);
 	HGDIOBJ hOrg = SelectObject(hdc, hBrush);
@@ -31,7 +32,10 @@ void DrawTrafficLight(HDC hdc, int x_pos, int y_pos)
 	Rectangle(hdc, rectLeft, rectTop, rectRight, rectBottom);
 
 	//create red brush
-	hBrush = CreateSolidBrush(colorRed);
+	if (state[0] == 1) {
+		hBrush = CreateSolidBrush(colorRed);
+	}
+	else hBrush = CreateSolidBrush(colorGray);
 	//Selects red brush and stores original brush in hOrg
 	hOrg = SelectObject(hdc, hBrush);
 
@@ -47,7 +51,11 @@ void DrawTrafficLight(HDC hdc, int x_pos, int y_pos)
 
 
 	//Create yellow brush 
-	hBrush = CreateSolidBrush(colorYellow);
+	if (state[1] == 1) {
+
+		hBrush = CreateSolidBrush(colorYellow);
+	}
+	else hBrush = CreateSolidBrush(colorGray);
 	//Select yellow brush and store original in hOrg
 	hOrg = SelectObject(hdc, hBrush);
 
@@ -59,10 +67,17 @@ void DrawTrafficLight(HDC hdc, int x_pos, int y_pos)
 	DeleteObject(hBrush);
 
 	//Create green brush 
-	hBrush = CreateSolidBrush(colorGreen);
+	//Create yellow brush 
+	if (state[2] == 1) {
+
+		hBrush = CreateSolidBrush(colorGreen);
+	}
+	else hBrush = CreateSolidBrush(colorGray);
+
 	hOrg = SelectObject(hdc, hBrush);
 
 	//Draw green circle
+
 	Ellipse(hdc, lightsLeft, greenTop, lightsRight, greenBottom);
 
 

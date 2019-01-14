@@ -11,6 +11,14 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
+COLORREF color = (RGB(0, 0, 0));
+int eastState = 0;
+int southState = 3;
+bool** states;
+bool lightState1[] = { TRUE, FALSE,FALSE };
+bool lightState2[] = { TRUE, TRUE, FALSE };
+bool lightState3[] = { FALSE, FALSE, TRUE };
+bool lightState4[] = { FALSE, TRUE, FALSE };
 
 
 // Forward declarations of functions included in this code module:
@@ -39,6 +47,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+
+	//Create states for trafficLight
+	
+
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DAT154SDKEX1));
 
@@ -106,6 +118,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
+   states = new bool*[4];
+   states[0] = lightState1;
+   states[1] = lightState2;
+   states[2] = lightState3;
+   states[3] = lightState4;
 
    ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
@@ -153,8 +170,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		HDC hdc = BeginPaint(hWnd, &ps);
 
 		DrawRoads(hdc);
-		DrawTrafficLight(hdc, 525, 85);
-		DrawTrafficLight(hdc, 675, 225);
+		DrawTrafficLight(hdc, 525, 85, states[eastState]);
+		DrawTrafficLight(hdc, 675, 225, states[southState]);
 
 
 		//End painting session
@@ -167,7 +184,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 
 	case WM_LBUTTONDOWN:
-		MessageBox(hWnd, L"BANG", L"", MB_OK);
+		
+		eastState++;
+		southState--;
+		if (eastState == 4)
+			eastState = 0;
+		if (southState == -1)
+			southState = 3;
+
+		if (eastState == 2)
+			southState = 0;
+		
+		InvalidateRect(hWnd, NULL, true);
 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);

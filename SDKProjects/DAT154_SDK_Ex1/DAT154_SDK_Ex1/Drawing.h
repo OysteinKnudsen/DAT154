@@ -5,6 +5,6 @@
 
 
 
-void DrawTrafficLight(HDC hdc, int x_pos, int y_pos);
+void DrawTrafficLight(HDC hdc, int x_pos, int y_pos, bool state [] );
 void DrawRoads(HDC hdc);
 #endif
