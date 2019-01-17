@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "DAT154_SDK_Ex1.h"
 #include "Drawing.h"
+#include "Car.h"
 
 #define MAX_LOADSTRING 100
 
@@ -13,8 +14,12 @@ WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 COLORREF color = (RGB(0, 0, 0));
 int eastState = 0;
-int southState = 3;
+int southState = 2;
 bool** states;
+int numberOfWestCars = 0;
+int numberOfNorthCars = 0;
+Car* westCars[50];
+Car* northCars[50];
 bool lightState1[] = { TRUE, FALSE,FALSE };
 bool lightState2[] = { TRUE, TRUE, FALSE };
 bool lightState3[] = { FALSE, FALSE, TRUE };
@@ -25,7 +30,11 @@ bool lightState4[] = { FALSE, TRUE, FALSE };
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+void DrawCars(const HDC &hdc);
+void AddWestCar();
+void AddNorthCar();
 void ChangeLightStates();
+void UpdateCarPositions();
 void InsertCar(const WCHAR[6]);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -129,6 +138,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	   5000,							// 10-second interval 
 	   (TIMERPROC)NULL);
 
+   SetTimer(hWnd, IDT_CARUPDATETIMER, 10, (TIMERPROC)NULL);
+
    ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
 
@@ -144,7 +155,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         {
             int wmId = LOWORD(wParam);
             // Parse the menu selections:
-            switch (wmId)
+            switch (wmId)	
             {
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
@@ -168,7 +179,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		DrawRoads(hdc);
 		DrawTrafficLight(hdc, 525, 85, states[eastState]);
 		DrawTrafficLight(hdc, 675, 225, states[southState]);
-
+		DrawCars(hdc);
 
 		//End painting session
 		EndPaint(hWnd, &ps);
@@ -181,20 +192,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDT_TRAFFICLIGHTTIMER:
 			ChangeLightStates();
 			InvalidateRect(hWnd, NULL, true);
+
+		case IDT_CARUPDATETIMER:
+			if (numberOfWestCars > 0) {
+				UpdateCarPositions();
+				InvalidateRect(hWnd, NULL, true);
+			}
 		}
+
         
     case WM_DESTROY:
 		
         break;
 
 	case WM_LBUTTONDOWN:
-		InsertCar(L"west",);
+	{
+		if (numberOfWestCars < 50) {
+			AddWestCar();
+		}
 		InvalidateRect(hWnd, 0, FALSE);
+	}
 
-	case WM_RBUTTONDOWN:
-		InsertCar(L"north");
+	case WM_RBUTTONDOWN: 
+	{
+		if (numberOfNorthCars < 50) {
+			AddNorthCar();
+		}
 		InvalidateRect(hWnd, 0, FALSE);
+	}
+	
+		
+	case WM_MOUSEMOVE:
+	{
+		WCHAR s[100];
+		int x = (short)LOWORD(lParam);
+		int y = (short)HIWORD(lParam);
+		wsprintf(s, L"Koordiantes (%d, %d)", x, y);
+		SetWindowTextW(hWnd, s);
+		break;
 
+	}
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
    
@@ -203,19 +240,71 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+void DrawCars(const HDC &hdc)
+{
+	if (numberOfWestCars > 0) {
+		for (int i = 0; i < numberOfWestCars; i++) {
+			DrawCar(hdc, *westCars[i]);
+		}
+	}
+
+	if (numberOfNorthCars > 0) {
+		for (int i = 0; i < numberOfNorthCars; i++) {
+			DrawCar(hdc, *northCars[i]);
+		}
+	}
+}
+
+void AddWestCar()
+{
+	Car *car = new Car(25, 325, 5);
+	westCars[numberOfWestCars] = car;
+	numberOfWestCars++;
+}
+
+void AddNorthCar()
+{
+	Car *car = new Car(575, 30, 5);
+	northCars[numberOfNorthCars] = car;
+	numberOfNorthCars++;
+}
+
 void ChangeLightStates()
 {
 	eastState++;
-	southState--;
+	southState++;
 	if (eastState == 4)
 		eastState = 0;
-	if (southState == -1)
-		southState = 3;
+	
 
-	if (eastState == 2)
+	if (southState == 4)
 		southState = 0;
 }
-void InsertCar()
+
+void UpdateCarPositions() 
+{
+	//For each car in the cars 
+	
+	for (int i = 0; i < numberOfWestCars; i++) {
+		if (eastState == 2 | eastState == 3 && westCars[i]->xPos > 480 & westCars[i]->xPos < 550)
+		{
+			break;
+		} else 
+		westCars[i]->xPos = westCars[i]->xPos + 10;
+	}
+
+	for (int i = 0; i < numberOfNorthCars; i++) {
+		if (southState == 2 | southState == 3 && northCars[i]->yPos > 200 && northCars[i]->yPos < 250)
+		{
+			break;
+		}
+		else
+			northCars[i]->yPos = northCars[i]->yPos + 5;
+	}
+
+	
+	
+}
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

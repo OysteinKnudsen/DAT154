@@ -1,5 +1,6 @@
 #include "Drawing.h"
 #include "stdafx.h"
+#include "Car.h"
 
 COLORREF colorRed = RGB(255, 0, 0);
 COLORREF colorGreen = RGB(0, 255, 0);
@@ -120,4 +121,22 @@ void DrawRoads(HDC hdc) {
 	DeleteObject(hOrg);
 	SelectObject(hdc, hPenOld);
 	DeleteObject(hPen);
+}
+
+void DrawCar(HDC hdc, Car &car) {
+	//Brushes
+	HBRUSH hBrush = CreateSolidBrush(colorBlack);
+	HGDIOBJ hOrg = SelectObject(hdc, hBrush);
+
+	//Square representing car TODO: Make nicer car
+	int rectLeft = car.xPos - 20;
+	int rectRight = car.xPos + 20;
+	int rectTop = car.yPos - 20;
+	int rectBottom = car.yPos + 20;
+
+	Rectangle(hdc, rectLeft, rectTop, rectRight, rectBottom);
+
+	SelectObject(hdc, hOrg);
+	DeleteObject(hOrg);
+
 }
