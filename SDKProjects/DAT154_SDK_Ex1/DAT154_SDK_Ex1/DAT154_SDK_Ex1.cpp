@@ -25,6 +25,8 @@ bool lightState4[] = { FALSE, TRUE, FALSE };
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+void ChangeLightStates();
+void InsertCar(const WCHAR[6]);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -49,8 +51,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
 
 	//Create states for trafficLight
-	
-
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DAT154SDKEX1));
 
@@ -124,22 +124,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    states[2] = lightState3;
    states[3] = lightState4;
 
+   SetTimer(hWnd,						// handle to main window 
+	   IDT_TRAFFICLIGHTTIMER,		     // timer identifier 
+	   5000,							// 10-second interval 
+	   (TIMERPROC)NULL);
+
    ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
 
    return TRUE;
 }
 
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -177,25 +173,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//End painting session
 		EndPaint(hWnd, &ps);
 
-	}	
+	}
+
+	case WM_TIMER:
+		switch (wParam) 
+		{
+		case IDT_TRAFFICLIGHTTIMER:
+			ChangeLightStates();
+			InvalidateRect(hWnd, NULL, true);
+		}
         
     case WM_DESTROY:
 		
         break;
 
 	case WM_LBUTTONDOWN:
-		
-		eastState++;
-		southState--;
-		if (eastState == 4)
-			eastState = 0;
-		if (southState == -1)
-			southState = 3;
+		InsertCar(L"west",);
+		InvalidateRect(hWnd, 0, FALSE);
 
-		if (eastState == 2)
-			southState = 0;
-		
-		InvalidateRect(hWnd, NULL, true);
+	case WM_RBUTTONDOWN:
+		InsertCar(L"north");
+		InvalidateRect(hWnd, 0, FALSE);
 
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
@@ -204,6 +202,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     return 0;
 }
+
+void ChangeLightStates()
+{
+	eastState++;
+	southState--;
+	if (eastState == 4)
+		eastState = 0;
+	if (southState == -1)
+		southState = 3;
+
+	if (eastState == 2)
+		southState = 0;
+}
+void InsertCar()
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

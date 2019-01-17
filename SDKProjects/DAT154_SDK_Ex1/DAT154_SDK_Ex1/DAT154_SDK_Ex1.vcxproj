@@ -168,6 +168,7 @@
     <ResourceCompile Include="DAT154_SDK_Ex1.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\..\Users\oyste\Downloads\sportCarBitmap.bmp" />
     <Image Include="DAT154_SDK_Ex1.ico" />
     <Image Include="small.ico" />
   </ItemGroup>

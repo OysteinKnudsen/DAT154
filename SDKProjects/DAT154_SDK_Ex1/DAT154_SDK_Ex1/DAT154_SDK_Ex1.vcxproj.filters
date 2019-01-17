@@ -57,5 +57,8 @@
     <Image Include="DAT154_SDK_Ex1.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\..\..\..\..\Users\oyste\Downloads\sportCarBitmap.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
