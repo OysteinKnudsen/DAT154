@@ -5,6 +5,7 @@
 #include "DAT154_SDK_Ex1.h"
 #include "Drawing.h"
 #include "Car.h"
+#include "Resource.h"
 
 #define MAX_LOADSTRING 100
 
@@ -20,10 +21,10 @@ int numberOfWestCars = 0;
 int numberOfNorthCars = 0;
 Car* westCars[50];
 Car* northCars[50];
-bool lightState1[] = { TRUE, FALSE,FALSE };
-bool lightState2[] = { TRUE, TRUE, FALSE };
-bool lightState3[] = { FALSE, FALSE, TRUE };
-bool lightState4[] = { FALSE, TRUE, FALSE };
+bool lightState1[] = { TRUE, FALSE,FALSE }; // Red 
+bool lightState2[] = { TRUE, TRUE, FALSE }; // Red + Yellow
+bool lightState3[] = { FALSE, FALSE, TRUE };// Green
+bool lightState4[] = { FALSE, TRUE, FALSE }; // Yellow
 double pw = 96;
 double pn = 98;
 
@@ -147,7 +148,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	   50000,							// 1-second interval 
 	   (TIMERPROC)NULL);
 
-   SetTimer(hWnd, IDT_CARUPDATETIMER, 130, (TIMERPROC)NULL);
+   SetTimer(hWnd,
+	   IDT_CARUPDATETIMER,
+	   85,
+	   (TIMERPROC)NULL);
 
    ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
@@ -280,14 +284,14 @@ void DrawCars(const HDC &hdc)
 
 void AddWestCar()
 {
-	Car *car = new Car(25, 325, 5);
+	Car *car = new Car(25, 325, 50, 50, rand() % 7);
 	westCars[numberOfWestCars] = car;
 	numberOfWestCars++;
 }
 
 void AddNorthCar()
 {
-	Car *car = new Car(575, 30, 5);
+	Car *car = new Car(575, 30, 70, 50, rand() % 7 );
 	northCars[numberOfNorthCars] = car;
 	numberOfNorthCars++;
 }
@@ -312,11 +316,11 @@ void UpdateCarPositions()
 
 void UpdateWestCars()
 {
-	bool eastStopSignal = eastState == 2 || eastState == 3;
+	bool eastStopSignal = eastState != 0;
 
 	if (numberOfWestCars > 0) {
 		for (int i = 0; i < numberOfWestCars; i++) {
-			bool withinWestStopRange = westCars[i]->xPos > 480 & westCars[i]->xPos < 550;
+			bool withinWestStopRange = (westCars[i]->xPos > 480) && (westCars[i]->xPos < 550);
 
 
 			// CollisionDetection
@@ -332,7 +336,7 @@ void UpdateWestCars()
 			if (!((eastStopSignal) && (withinWestStopRange)))
 			{
 				if (!aboutToCollideWest)
-					westCars[i]->xPos = westCars[i]->xPos + 5;
+					westCars[i]->xPos = westCars[i]->xPos + 4 + westCars[i]->carSpeed;
 			}
 		}
 	}
@@ -340,7 +344,7 @@ void UpdateWestCars()
 
 void UpdateNorthCars()
 {
-	bool southStopSignal = southState == 2 || southState == 3;
+	bool southStopSignal = southState != 0;
 	//Update number of north cars if there are any
 	if (numberOfNorthCars > 0) {
 		for (int i = 0; i < numberOfNorthCars; i++) {
@@ -357,7 +361,7 @@ void UpdateNorthCars()
 			if (!((southStopSignal) && (withinNorthStopRange)))
 			{
 				if (!aboutToCollide)
-					northCars[i]->yPos = northCars[i]->yPos + 5;
+					northCars[i]->yPos = northCars[i]->yPos + 4 + northCars[i]->carSpeed;
 			}
 		}
 	}

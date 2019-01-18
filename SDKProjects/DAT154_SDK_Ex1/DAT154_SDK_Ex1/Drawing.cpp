@@ -1,6 +1,8 @@
 #include "Drawing.h"
 #include "stdafx.h"
 #include "Car.h"
+#include "Resource.h"
+#include "DAT154_SDK_Ex1.h"
 
 COLORREF colorRed = RGB(255, 0, 0);
 COLORREF colorGreen = RGB(0, 255, 0);
@@ -85,6 +87,7 @@ void DrawTrafficLight(HDC hdc, int x_pos, int y_pos, bool state[] )
 	//Reset to original brush
 	SelectObject(hdc, hOrg);
 	DeleteObject(hBrush);
+	DeleteObject(hOrg);
 	
 	int trafficLightWidth = rectRight - rectLeft;
 
@@ -121,9 +124,11 @@ void DrawRoads(HDC hdc) {
 	DeleteObject(hOrg);
 	SelectObject(hdc, hPenOld);
 	DeleteObject(hPen);
+	DeleteObject(hPenOld);
 }
 
 void DrawCar(HDC hdc, Car &car) {
+	// Begins the paint operation
 	//Brushes
 	HBRUSH hBrush = CreateSolidBrush(colorBlack);
 	HGDIOBJ hOrg = SelectObject(hdc, hBrush);
@@ -137,6 +142,6 @@ void DrawCar(HDC hdc, Car &car) {
 	Rectangle(hdc, rectLeft, rectTop, rectRight, rectBottom);
 
 	SelectObject(hdc, hOrg);
+	DeleteObject(hBrush);
 	DeleteObject(hOrg);
-
 }

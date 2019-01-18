@@ -63,5 +63,8 @@
     <Image Include="..\..\..\..\..\..\Users\oyste\Downloads\sportCarBitmap.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\..\..\..\..\Users\oyste\OneDrive\Bilder\RedRacingCarBitmap.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
