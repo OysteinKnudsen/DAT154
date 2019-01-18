@@ -24,6 +24,8 @@ bool lightState1[] = { TRUE, FALSE,FALSE };
 bool lightState2[] = { TRUE, TRUE, FALSE };
 bool lightState3[] = { FALSE, FALSE, TRUE };
 bool lightState4[] = { FALSE, TRUE, FALSE };
+double pw = 96;
+double pn = 98;
 
 
 // Forward declarations of functions included in this code module:
@@ -35,6 +37,8 @@ void AddWestCar();
 void AddNorthCar();
 void ChangeLightStates();
 void UpdateCarPositions();
+void UpdateWestCars();
+void UpdateNorthCars();
 void InsertCar(const WCHAR[6]);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
@@ -135,7 +139,12 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    SetTimer(hWnd,						// handle to main window 
 	   IDT_TRAFFICLIGHTTIMER,		     // timer identifier 
-	   7000,							// 10-second interval 
+	   5000,							// 10-second interval 
+	   (TIMERPROC)NULL);
+
+   SetTimer(hWnd,						// handle to main window 
+	   IDT_CARSPAWNTIMER,				// timer identifier 
+	   50000,							// 1-second interval 
 	   (TIMERPROC)NULL);
 
    SetTimer(hWnd, IDT_CARUPDATETIMER, 130, (TIMERPROC)NULL);
@@ -196,7 +205,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDT_CARUPDATETIMER:
 				UpdateCarPositions();
 				InvalidateRect(hWnd, NULL, true);
+
+		case IDT_CARSPAWNTIMER:
+			double randWest = rand() % 100;
+			double randNorth = rand() % 100;
+			bool addWestCarTrue = randWest >= pw;
+			bool addNorthCarTrue = randNorth >= pn;
+			if (addWestCarTrue && numberOfWestCars < 50) {
+				AddWestCar();
+			}
+			if (addNorthCarTrue && numberOfNorthCars < 50) {
+				AddNorthCar();
+			}
+
+			
 		}
+
+		
 
         
     case WM_DESTROY:
@@ -281,7 +306,12 @@ void ChangeLightStates()
 
 void UpdateCarPositions() 
 {
-	//Update positions of west cars if there are any
+	UpdateWestCars();
+	UpdateNorthCars();
+}
+
+void UpdateWestCars()
+{
 	bool eastStopSignal = eastState == 2 || eastState == 3;
 
 	if (numberOfWestCars > 0) {
@@ -289,51 +319,48 @@ void UpdateCarPositions()
 			bool withinWestStopRange = westCars[i]->xPos > 480 & westCars[i]->xPos < 550;
 
 
-				// CollisionDetection
-				bool aboutToCollideWest = false;
-				if (i >= 1) {
-					if (westCars[i - 1]->xPos - westCars[i]->xPos < 60) {
-						aboutToCollideWest = true;
-					}
+			// CollisionDetection
+			bool aboutToCollideWest = false;
+			if (i >= 1) {
+				if (westCars[i - 1]->xPos - westCars[i]->xPos < 60) {
+					aboutToCollideWest = true;
 				}
-				
-				
+			}
+
+
 
 			if (!((eastStopSignal) && (withinWestStopRange)))
 			{
 				if (!aboutToCollideWest)
-				westCars[i]->xPos = westCars[i]->xPos + 5;
+					westCars[i]->xPos = westCars[i]->xPos + 5;
 			}
 		}
 	}
+}
 
-
-
+void UpdateNorthCars()
+{
 	bool southStopSignal = southState == 2 || southState == 3;
 	//Update number of north cars if there are any
 	if (numberOfNorthCars > 0) {
 		for (int i = 0; i < numberOfNorthCars; i++) {
 			bool withinNorthStopRange = northCars[i]->yPos > 220 && northCars[i]->yPos < 250;
 
-				bool aboutToCollide = false;
-				if (i >= 1) {
-					if (northCars[i - 1]->yPos - northCars[i]->yPos < 60) {
-						aboutToCollide = true;
-					}
+			bool aboutToCollide = false;
+			if (i >= 1) {
+				if (northCars[i - 1]->yPos - northCars[i]->yPos < 60) {
+					aboutToCollide = true;
 				}
-				
+			}
+
 
 			if (!((southStopSignal) && (withinNorthStopRange)))
 			{
 				if (!aboutToCollide)
-				northCars[i]->yPos = northCars[i]->yPos + 5;
+					northCars[i]->yPos = northCars[i]->yPos + 5;
 			}
 		}
 	}
-	
-
-	
-	
 }
 
 // Message handler for about box.
