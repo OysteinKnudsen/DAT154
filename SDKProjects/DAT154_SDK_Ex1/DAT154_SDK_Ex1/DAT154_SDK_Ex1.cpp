@@ -135,10 +135,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    SetTimer(hWnd,						// handle to main window 
 	   IDT_TRAFFICLIGHTTIMER,		     // timer identifier 
-	   5000,							// 10-second interval 
+	   7000,							// 10-second interval 
 	   (TIMERPROC)NULL);
 
-   SetTimer(hWnd, IDT_CARUPDATETIMER, 10, (TIMERPROC)NULL);
+   SetTimer(hWnd, IDT_CARUPDATETIMER, 130, (TIMERPROC)NULL);
 
    ShowWindow(hWnd, SW_MAXIMIZE);
    UpdateWindow(hWnd);
@@ -194,10 +194,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, true);
 
 		case IDT_CARUPDATETIMER:
-			if (numberOfWestCars > 0) {
 				UpdateCarPositions();
 				InvalidateRect(hWnd, NULL, true);
-			}
 		}
 
         
@@ -283,24 +281,56 @@ void ChangeLightStates()
 
 void UpdateCarPositions() 
 {
-	//For each car in the cars 
-	
-	for (int i = 0; i < numberOfWestCars; i++) {
-		if (eastState == 2 | eastState == 3 && westCars[i]->xPos > 480 & westCars[i]->xPos < 550)
-		{
-			break;
-		} else 
-		westCars[i]->xPos = westCars[i]->xPos + 10;
+	//Update positions of west cars if there are any
+	bool eastStopSignal = eastState == 2 || eastState == 3;
+
+	if (numberOfWestCars > 0) {
+		for (int i = 0; i < numberOfWestCars; i++) {
+			bool withinWestStopRange = westCars[i]->xPos > 480 & westCars[i]->xPos < 550;
+
+
+				// CollisionDetection
+				bool aboutToCollideWest = false;
+				if (i >= 1) {
+					if (westCars[i - 1]->xPos - westCars[i]->xPos < 60) {
+						aboutToCollideWest = true;
+					}
+				}
+				
+				
+
+			if (!((eastStopSignal) && (withinWestStopRange)))
+			{
+				if (!aboutToCollideWest)
+				westCars[i]->xPos = westCars[i]->xPos + 5;
+			}
+		}
 	}
 
-	for (int i = 0; i < numberOfNorthCars; i++) {
-		if (southState == 2 | southState == 3 && northCars[i]->yPos > 200 && northCars[i]->yPos < 250)
-		{
-			break;
+
+
+	bool southStopSignal = southState == 2 || southState == 3;
+	//Update number of north cars if there are any
+	if (numberOfNorthCars > 0) {
+		for (int i = 0; i < numberOfNorthCars; i++) {
+			bool withinNorthStopRange = northCars[i]->yPos > 220 && northCars[i]->yPos < 250;
+
+				bool aboutToCollide = false;
+				if (i >= 1) {
+					if (northCars[i - 1]->yPos - northCars[i]->yPos < 60) {
+						aboutToCollide = true;
+					}
+				}
+				
+
+			if (!((southStopSignal) && (withinNorthStopRange)))
+			{
+				if (!aboutToCollide)
+				northCars[i]->yPos = northCars[i]->yPos + 5;
+			}
 		}
-		else
-			northCars[i]->yPos = northCars[i]->yPos + 5;
 	}
+	
 
 	
 	
