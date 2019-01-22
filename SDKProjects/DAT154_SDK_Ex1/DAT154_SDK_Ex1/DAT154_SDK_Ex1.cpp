@@ -3,9 +3,9 @@
 
 #include "stdafx.h"
 #include "DAT154_SDK_Ex1.h"
+#include "Resource.h"
 #include "Drawing.h"
 #include "Car.h"
-#include "Resource.h"
 
 #define MAX_LOADSTRING 100
 
@@ -25,14 +25,19 @@ bool lightState1[] = { TRUE, FALSE,FALSE }; // Red
 bool lightState2[] = { TRUE, TRUE, FALSE }; // Red + Yellow
 bool lightState3[] = { FALSE, FALSE, TRUE };// Green
 bool lightState4[] = { FALSE, TRUE, FALSE }; // Yellow
-double pw = 96;
-double pn = 98;
+int pw = 10;
+int pn = 10;
+int numberOfSpawnTimerMessages = 0;
+RECT *spawnRateRect = new RECT();
 
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+void				PrintSpawnRates(HDC);
+void PrintSimulationInstructions(HDC);
+void				PrintSpawnRate(HDC);
 void DrawCars(const HDC &hdc);
 void AddWestCar();
 void AddNorthCar();
@@ -42,6 +47,7 @@ void UpdateWestCars();
 void UpdateNorthCars();
 void InsertCar(const WCHAR[6]);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+INT_PTR CALLBACK	SpawnRateDialog(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -140,13 +146,15 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    SetTimer(hWnd,						// handle to main window 
 	   IDT_TRAFFICLIGHTTIMER,		     // timer identifier 
-	   5000,							// 10-second interval 
+	   3000,							// 3-second interval 
 	   (TIMERPROC)NULL);
 
-   SetTimer(hWnd,						// handle to main window 
-	   IDT_CARSPAWNTIMER,				// timer identifier 
-	   50000,							// 1-second interval 
-	   (TIMERPROC)NULL);
+   SetTimer(hWnd,
+	   IDT_CARSPAWNTIMER,
+	   1000,
+	   (TIMERPROC)NULL
+	 );
+   
 
    SetTimer(hWnd,
 	   IDT_CARUPDATETIMER,
@@ -176,11 +184,43 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
+			
+
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
         }
         break;
+		
+		//Key presses for spawn intensity
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case VK_RIGHT:
+			if (pw + 10 <= 100) {
+				pw += 10;
+				InvalidateRect(hWnd, 0, true);
+			}
+			break;
+		case VK_LEFT:
+			if (pw - 10 >= 0) {
+				pw -= 10;
+				InvalidateRect(hWnd, 0, true);
+			}
+			break;
+		case VK_UP:
+			if (pn + 10 <= 100) {
+				pn += 10;
+				InvalidateRect(hWnd, 0, true);
+			}
+			break;
+		case VK_DOWN:
+			if (pn - 10 >= 0) {
+				pn -= 10;
+				InvalidateRect(hWnd, 0, true);
+			}
+			break;
+		}
+
 
     case WM_PAINT:
         {
@@ -193,6 +233,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		DrawTrafficLight(hdc, 525, 85, states[eastState]);
 		DrawTrafficLight(hdc, 675, 225, states[southState]);
 		DrawCars(hdc);
+		PrintSpawnRates(hdc);
+		PrintSimulationInstructions(hdc);
 
 		//End painting session
 		EndPaint(hWnd, &ps);
@@ -205,22 +247,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDT_TRAFFICLIGHTTIMER:
 			ChangeLightStates();
 			InvalidateRect(hWnd, NULL, true);
+			break;
 
 		case IDT_CARUPDATETIMER:
 				UpdateCarPositions();
 				InvalidateRect(hWnd, NULL, true);
+				break;
 
 		case IDT_CARSPAWNTIMER:
+			numberOfSpawnTimerMessages++;
 			double randWest = rand() % 100;
 			double randNorth = rand() % 100;
-			bool addWestCarTrue = randWest >= pw;
-			bool addNorthCarTrue = randNorth >= pn;
+			bool addWestCarTrue = randWest <= pw;
+			bool addNorthCarTrue = randNorth <= pn;
 			if (addWestCarTrue && numberOfWestCars < 50) {
 				AddWestCar();
 			}
 			if (addNorthCarTrue && numberOfNorthCars < 50) {
 				AddNorthCar();
 			}
+			break;
 
 			
 		}
@@ -234,18 +280,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_LBUTTONDOWN:
 	{
-		if (numberOfWestCars < 50) {
-			AddWestCar();
-		}
-		InvalidateRect(hWnd, 0, FALSE);
+		//if (numberOfWestCars < 50) {
+			//AddWestCar();
+		//}
+		//InvalidateRect(hWnd, 0, FALSE);
 	}
 
 	case WM_RBUTTONDOWN: 
 	{
-		if (numberOfNorthCars < 50) {
-			AddNorthCar();
-		}
-		InvalidateRect(hWnd, 0, FALSE);
+	//	if (numberOfNorthCars < 50) {
+		//	AddNorthCar();
+		//}
+		//InvalidateRect(hWnd, 0, FALSE);
+
 	}
 	
 		
@@ -320,7 +367,7 @@ void UpdateWestCars()
 
 	if (numberOfWestCars > 0) {
 		for (int i = 0; i < numberOfWestCars; i++) {
-			bool withinWestStopRange = (westCars[i]->xPos > 480) && (westCars[i]->xPos < 550);
+			bool withinWestStopRange = (westCars[i]->xPos > 470) && (westCars[i]->xPos < 550);
 
 
 			// CollisionDetection
@@ -367,6 +414,26 @@ void UpdateNorthCars()
 	}
 }
 
+
+void PrintSpawnRates(HDC hdc) {
+	TCHAR northRate[50];
+	TCHAR westRate[50];
+	TCHAR timerCounter[50];
+	swprintf_s(northRate, 50, L"North rate: %d %%", pn);
+	swprintf_s(westRate, 50, L"West rate: %d %%", pw);
+	swprintf_s(timerCounter, 50, L"Spawn timer messages recieved: %d ", numberOfSpawnTimerMessages);
+
+	TextOut(hdc, 5, 5, northRate, wcslen(northRate));
+	TextOut(hdc, 5, 20, westRate, wcslen(westRate));
+	TextOut(hdc, 5, 35, timerCounter, wcslen(timerCounter));
+}
+
+void PrintSimulationInstructions(HDC hdc) {
+	TCHAR spawnRateInstructions[100];
+	swprintf_s(spawnRateInstructions, 100, L"Increase spawn rates by using \n left/right for west \n up/down for north");
+	TextOut(hdc, 5, 55, spawnRateInstructions, wcslen(spawnRateInstructions));
+}
+
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -385,4 +452,25 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     }
     return (INT_PTR)FALSE;
+}
+
+INT_PTR CALLBACK SpawnRateDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
+	UNREFERENCED_PARAMETER(lParam);
+	switch (message)
+	{
+	static HWND hEdit;
+	case WM_INITDIALOG:
+		hEdit = GetDlgItem(hDlg, IDC_EDIT1);
+		SetWindowText(hEdit, L"TEXT");
+		return (INT_PTR)TRUE;
+
+	case WM_COMMAND:
+		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		{
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+		break;
+	}
+	return (INT_PTR)FALSE;
 }
