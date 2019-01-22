@@ -29,6 +29,11 @@ int pw = 10;
 int pn = 10;
 int numberOfSpawnTimerMessages = 0;
 RECT *spawnRateRect = new RECT();
+HWND hwndEdit;
+HWND hWestSpawnRateEdit;
+HWND hNorthSpawnRateEdit;
+
+
 
 
 // Forward declarations of functions included in this code module:
@@ -130,7 +135,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
-
+   HWND hEditUserInput;
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
    
@@ -178,9 +183,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // Parse the menu selections:
             switch (wmId)	
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
@@ -194,7 +196,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		
 		//Key presses for spawn intensity
 	case WM_KEYDOWN:
+		
 		switch (wParam) {
+		case VK_SPACE:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_DIALOG1), hWnd, SpawnRateDialog);
+			break;
+
 		case VK_RIGHT:
 			if (pw + 10 <= 100) {
 				pw += 10;
@@ -284,10 +291,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//AddWestCar();
 		//}
 		//InvalidateRect(hWnd, 0, FALSE);
+
+
+		
 	}
 
 	case WM_RBUTTONDOWN: 
 	{
+
+
 	//	if (numberOfNorthCars < 50) {
 		//	AddNorthCar();
 		//}
@@ -418,14 +430,11 @@ void UpdateNorthCars()
 void PrintSpawnRates(HDC hdc) {
 	TCHAR northRate[50];
 	TCHAR westRate[50];
-	TCHAR timerCounter[50];
 	swprintf_s(northRate, 50, L"North rate: %d %%", pn);
 	swprintf_s(westRate, 50, L"West rate: %d %%", pw);
-	swprintf_s(timerCounter, 50, L"Spawn timer messages recieved: %d ", numberOfSpawnTimerMessages);
 
 	TextOut(hdc, 5, 5, northRate, wcslen(northRate));
 	TextOut(hdc, 5, 20, westRate, wcslen(westRate));
-	TextOut(hdc, 5, 35, timerCounter, wcslen(timerCounter));
 }
 
 void PrintSimulationInstructions(HDC hdc) {
@@ -434,39 +443,47 @@ void PrintSimulationInstructions(HDC hdc) {
 	TextOut(hdc, 5, 55, spawnRateInstructions, wcslen(spawnRateInstructions));
 }
 
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
-
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
-}
-
+//Message handler for Spawn Rate Dialog
 INT_PTR CALLBACK SpawnRateDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(lParam);
 	switch (message)
 	{
 	static HWND hEdit;
 	case WM_INITDIALOG:
+		hWestSpawnRateEdit = CreateWindow(
+			L"EDIT",
+			L"",
+			WS_BORDER | WS_CHILD | WS_VISIBLE,
+			170, 50, 50, 20,
+			hDlg, NULL, NULL, NULL);
+
+		hNorthSpawnRateEdit = CreateWindow(
+			L"EDIT",
+			L"",
+			WS_BORDER | WS_CHILD | WS_VISIBLE,
+			170, 30, 50, 20,
+			hDlg, NULL, NULL, NULL);
+		SetWindowTextA(hWestSpawnRateEdit, "pw");
+		SetWindowTextA(hNorthSpawnRateEdit, "pn");
 		hEdit = GetDlgItem(hDlg, IDC_EDIT1);
-		SetWindowText(hEdit, L"TEXT");
 		return (INT_PTR)TRUE;
 
 	case WM_COMMAND:
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
+		if (LOWORD(wParam) == IDCANCEL)
 		{
+
+			EndDialog(hDlg, LOWORD(wParam));
+			return (INT_PTR)TRUE;
+		}
+
+		if (LOWORD(wParam) == IDOK) {
+			TCHAR northRate[3];
+			TCHAR westRate[3];
+			GetWindowText(hNorthSpawnRateEdit, northRate, 3);
+			GetWindowText(hWestSpawnRateEdit, westRate, 3);
+
+			pn = _tstoi(northRate);
+			pw = _tstoi(westRate);
 			EndDialog(hDlg, LOWORD(wParam));
 			return (INT_PTR)TRUE;
 		}
