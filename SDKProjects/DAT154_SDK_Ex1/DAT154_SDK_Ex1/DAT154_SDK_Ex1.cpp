@@ -172,7 +172,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
@@ -330,7 +329,7 @@ void DrawCars(const HDC &hdc)
 {
 	if (numberOfWestCars > 0) {
 		for (int i = 0; i < numberOfWestCars; i++) {
-			DrawCar(hdc, *westCars[i]);
+			DrawBitMapCar(hdc, hInst, *westCars[i]);
 		}
 	}
 
@@ -426,7 +425,6 @@ void UpdateNorthCars()
 	}
 }
 
-
 void PrintSpawnRates(HDC hdc) {
 	TCHAR northRate[50];
 	TCHAR westRate[50];
@@ -439,7 +437,10 @@ void PrintSpawnRates(HDC hdc) {
 
 void PrintSimulationInstructions(HDC hdc) {
 	TCHAR spawnRateInstructions[100];
+	TCHAR spaceBarInstructions[50];
 	swprintf_s(spawnRateInstructions, 100, L"Increase spawn rates by using \n left/right for west \n up/down for north");
+	swprintf_s(spaceBarInstructions, 50, L"Spacebar: Manual editing of spawn rates");
+	TextOut(hdc, 5, 75, spaceBarInstructions, wcslen(spaceBarInstructions));
 	TextOut(hdc, 5, 55, spawnRateInstructions, wcslen(spawnRateInstructions));
 }
 

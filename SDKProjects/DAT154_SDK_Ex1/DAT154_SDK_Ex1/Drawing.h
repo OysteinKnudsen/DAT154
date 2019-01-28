@@ -11,4 +11,5 @@
 void DrawTrafficLight(HDC hdc, int x_pos, int y_pos, bool state [] );
 void DrawRoads(HDC hdc);
 void DrawCar(HDC hdc, Car &car);
+void DrawBitMapCar(HDC hdc, HINSTANCE hInst, Car & car);
 #endif

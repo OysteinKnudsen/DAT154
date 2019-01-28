@@ -84,7 +84,6 @@ void DrawTrafficLight(HDC hdc, int x_pos, int y_pos, bool state[] )
 	Ellipse(hdc, lightsLeft, greenTop, lightsRight, greenBottom);
 
 
-	//Reset to original brush
 	SelectObject(hdc, hOrg);
 	DeleteObject(hBrush);
 	DeleteObject(hOrg);
@@ -144,4 +143,28 @@ void DrawCar(HDC hdc, Car &car) {
 	SelectObject(hdc, hOrg);
 	DeleteObject(hBrush);
 	DeleteObject(hOrg);
+}
+
+void DrawBitMapCar(HDC hdc, HINSTANCE hInst, Car &car) {
+	HDC hdcMem = CreateCompatibleDC(hdc);
+
+	HBITMAP bm = CreateCompatibleBitmap(hdc, car.width + 50, car.height + 50);
+
+	SelectObject(hdcMem, bm);
+
+	HDC hdcCar = CreateCompatibleDC(hdc);
+
+	HBITMAP bmCar = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP2));
+
+	SelectObject(hdcCar, bmCar);
+
+	BitBlt(hdcMem, car.xPos, car.yPos, 200, 500, hdcCar, 0, 0, SRCCOPY);
+
+	BitBlt(hdc, 0 , 0, 1000, 1000, hdcMem, 0, 0, SRCCOPY);
+
+	DeleteDC(hdcCar);
+	DeleteDC(hdcMem);
+	DeleteObject(bm);
+	DeleteObject(bmCar);
+
 }
