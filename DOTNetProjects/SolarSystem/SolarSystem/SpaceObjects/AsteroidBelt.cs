@@ -9,6 +9,8 @@ namespace SolarSystem.SpaceObjects
 {
     public class AsteroidBelt : SpaceObject
     {
+        private Asteroid [] _asteroids;
+
         public AsteroidBelt(String name, String color) : base(name, color) { }
 
         public override void Draw()

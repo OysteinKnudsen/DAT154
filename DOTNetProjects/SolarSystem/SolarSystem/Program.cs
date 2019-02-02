@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using SpaceSim;
 using SolarSystem.SpaceObjects;
+using SolarSystem;
+
 class Astronomy
 {
     public static void Main()
@@ -11,20 +13,22 @@ class Astronomy
         //From nasa.gov: 
         // Planets, comets, asteroids and other objects in the solar system orbit the sun.
  {
-         new Star("Sun", "Yellow"),
-         new Star("Sun", "blue"),
-         new Planet("Mercury", "Gray"),
-         new Planet("Venus", "Blue"),
-         new Planet("Terra", "Orange"),
-         new Moon("The Moon", "White/Gray"), 
-         new DwarfPlanet("Pluto", "Dirty Brown")
+         new Star("Sun", "Yellow", new Coordinates(0,0)),
+         new Planet("Mercury" , "Gray", 2439.7, 60000000, 87.8, new Coordinates(60000000,0 ))
 
  };
-        foreach (SpaceObject obj in solarSystem)
+        double numberOfDays = 0;
+        while (numberOfDays < 100)
         {
-            obj.Draw();
+            foreach (SpaceObject obj in solarSystem)
+            {
+                obj.Draw();
+                obj.CalculatePosition(numberOfDays);
+            }
+            numberOfDays += 21.75;
+
         }
 
-        Console.ReadLine();
+
     }
 }

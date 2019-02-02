@@ -4,20 +4,26 @@ namespace SpaceSim
 {
     public class SpaceObject
     {
+        private string name;
+        private string color;
+
         //Fields
-        private string name { get; set; }
+        protected string _name { get; set; }
 
-        private string color { get; set; }
+        protected string _color { get; set; }
 
-        private double radius { get; set; }
+        protected double _radius { get; set; }
 
-        private double orbitalRadius { get; set; } //Assume circular orbits
-
-        private double rotationalPeriod { get; set; } //Length of day
-
-        private Coordinates position { get; set; }
+        public Coordinates _position { get; set; }
 
         //Methods
+
+        public SpaceObject(string name, string color, Coordinates position)
+        {
+            this._name = name;
+            this._color = color;
+            this._position = position;
+        }
 
         public SpaceObject(string name, string color)
         {
@@ -25,11 +31,14 @@ namespace SpaceSim
             this.color = color;
         }
 
+        public SpaceObject()
+        {
+        }
 
         public virtual void Draw()
         {
-            Console.WriteLine($"Name: {name}");
-            Console.WriteLine($"Color {color}");
+            Console.WriteLine($"Name: {_name}");
+            Console.WriteLine($"Current position: {_position}");
         }
 
         /// <summary>
@@ -39,9 +48,7 @@ namespace SpaceSim
         /// <returns>Position of the space object at a given time</returns>
         public virtual Coordinates CalculatePosition(double time)
         {
-            var coordinates = new Coordinates();
-            this.position = coordinates;
-            return coordinates;
+            return new Coordinates();
         }
     }
 }

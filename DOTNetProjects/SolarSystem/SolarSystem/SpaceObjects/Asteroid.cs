@@ -9,7 +9,11 @@ namespace SolarSystem.SpaceObjects
 {
     public class Asteroid : SpaceObject
     {
-        public Asteroid(string name, string color) : base(name, color) { }
+
+        private double _radius { get; set; }
+
+
+        public Asteroid(string name, string color, Coordinates position) : base(name, color, position) { }
 
         public override void Draw()
         {

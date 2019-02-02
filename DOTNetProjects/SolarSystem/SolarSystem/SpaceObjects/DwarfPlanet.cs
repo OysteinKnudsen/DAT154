@@ -8,7 +8,7 @@ namespace SolarSystem.SpaceObjects
 {
     public class DwarfPlanet : Planet
     {
-        public DwarfPlanet(string name, string color) : base(name, color) { }
+        public DwarfPlanet(string name, string color, double radius, Coordinates position) : base(name, color, radius, position) { }
 
         public override void Draw()
         {

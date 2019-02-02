@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SolarSystem
 {
-    public struct Coordinates
+    public class Coordinates
     {
-        double x { get; set; }
-        double y { get; set; }
+        public double x { get; set; }
+        public  double y { get; set; }
 
         public Coordinates (double x = 0, double y = 0)
         {
@@ -17,7 +17,12 @@ namespace SolarSystem
             this.y = y;
         }
 
+        public override string ToString()
+        {
+            return $"({x},{y})";
+        }
 
-        
+
+
     }
 }

@@ -9,11 +9,9 @@ namespace SolarSystem.SpaceObjects
 {
     public class Star : SpaceObject
     {
-        public Star(string name, string color) : base(name, color) { }
+        public Star(string name, string color, Coordinates position) : base(name, color, position) { }
         public override void Draw()
         {
-            Console.Write("Star : ");
-            base.Draw();
         }
     }
 }
