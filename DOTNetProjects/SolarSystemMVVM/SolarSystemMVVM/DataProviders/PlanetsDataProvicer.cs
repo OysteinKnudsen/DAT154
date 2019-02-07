@@ -34,11 +34,11 @@ namespace SolarSystemMVVM.DataProviders
             SpaceObject spaceObject = new SpaceObject();
             try
             {
-                spaceObject.Name = values[0];
-                spaceObject.Orbits = values[1];
-                spaceObject.Distance = Convert.ToInt32(values[2]);
+                spaceObject._name = values[0];
+                spaceObject._orbits = values[1];
+                spaceObject._distance = Convert.ToInt32(values[2]);
                 string orbitalPeriod = values[3];
-                spaceObject.OrbitalPeriod = Convert.ToDouble(values[3], System.Globalization.CultureInfo.InvariantCulture);
+                spaceObject._orbitalPeriod = Convert.ToDouble(values[3], System.Globalization.CultureInfo.InvariantCulture);
             } catch (FormatException fe)
             {
                 //TODO: Handle exception

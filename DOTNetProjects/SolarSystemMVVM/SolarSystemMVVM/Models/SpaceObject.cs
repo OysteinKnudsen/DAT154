@@ -1,41 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SolarSystemMVVM.Models
 {
-   public class SpaceObject
+   public class SpaceObject : INotifyPropertyChanged
     {
-        public string Name { get; set; }
-        public string Orbits { get; set; }
-        public int Distance { get; set; }
-        public double OrbitalPeriod { get; set; }
+        public string _name { get; set; }
+        public string _orbits { get; set; }
+        public int _distance { get; set; }
+        public double _orbitalPeriod { get; set; }
+        public int _xPos;
+        public int _yPos;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public SpaceObject()
         {
-            Name = "Unknown name";
-            Orbits = "Unknown orbit";
-            Distance = -1;
-            OrbitalPeriod = -1;
+            _name = "Unknown name";
+            _orbits = "Unknown orbit";
+            _distance = -1;
+            _orbitalPeriod = -1;
         }
         public SpaceObject(string name, string orbits, int distance, int orbitalPeriod)
         {
-            Name = name;
-            Orbits = orbits;
-            Distance = distance;
-            OrbitalPeriod = orbitalPeriod;
+            _name = name;
+            _orbits = orbits;
+            _distance = distance;
+            _orbitalPeriod = orbitalPeriod;
         }
 
-        public void PrintDetails()
+        private void OnPropertyChanged()
         {
-            Console.WriteLine($"Name: {Name}");
-        }
 
+        }
         public override string ToString()
         {
-            return $"Name : {Name} | Orbits : {Orbits} | Distance (000) km : {Distance} | Orbital period : {OrbitalPeriod}";
+            return $"Name : {_name} | Orbits : {_orbits} | Distance (000) km : {_distance} | Orbital period : {_orbitalPeriod}";
         }
 
     }
