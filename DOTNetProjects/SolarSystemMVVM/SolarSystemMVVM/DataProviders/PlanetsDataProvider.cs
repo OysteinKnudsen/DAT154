@@ -41,7 +41,7 @@ namespace SolarSystemMVVM.DataProviders
                 spaceObject._orbitalPeriod = Convert.ToDouble(values[3], System.Globalization.CultureInfo.InvariantCulture);
             } catch (FormatException fe)
             {
-                //TODO: Handle exception
+                
             }
             
             return spaceObject;

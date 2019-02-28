@@ -8,6 +8,9 @@ namespace EventsAndDelegates
 {
     public class TextService
     {
-
+        public void OnVideoEncoded(Object o, EventArgs e)
+        {
+            Console.WriteLine("Text service notified of video encoding, sending text message");
+        }
     }
 }

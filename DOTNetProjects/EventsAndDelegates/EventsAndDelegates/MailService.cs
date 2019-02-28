@@ -8,9 +8,11 @@ namespace EventsAndDelegates
 {
     public class MailService
     {
+
+        //EventHandler
         public void OnVideoEncoded(Object o, EventArgs e)
         {
-            Console.WriteLine("Mail service received notification about video encoding \n will send mail");
+            Console.WriteLine("Mail service notified about video encoding, sending mail");
         }
     }
 }

@@ -63,10 +63,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataProviders\PlanetsDataProvicer.cs" />
+    <Compile Include="DataProviders\PlanetsDataProvider.cs" />
     <Compile Include="Models\Moon.cs" />
     <Compile Include="Models\SpaceObject.cs" />
     <Compile Include="Models\Sun.cs" />
+    <Compile Include="ViewModels\Commands\StartSimulationCommand.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

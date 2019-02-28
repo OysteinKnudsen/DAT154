@@ -1,19 +1,11 @@
-﻿using SolarSystemMVVM.DataProviders;
-using SolarSystemMVVM.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SolarSystemMVVM.Models;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SolarSystemMVVM.ViewModels;
+using System;
+using System.Windows.Threading;
 
 namespace SolarSystemMVVM.Views
 {
@@ -22,21 +14,59 @@ namespace SolarSystemMVVM.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        int days = 1;
+        MainWindowViewModel _viewModel;
+        private TimeSpan SLOW = new TimeSpan(500000);
         public MainWindow()
         {
-            PlanetsDataProvider provider = new PlanetsDataProvider();
+            _viewModel = new MainWindowViewModel();
+            InitializeComponent();
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(timer_tick);
+            timer.Interval = SLOW;
+            timer.Start();
+            DataContext = _viewModel;
+        }
 
-            var planets = provider.GetSpaceObjects();
-
-            foreach (SpaceObject so in planets)
+        private void timer_tick(object sender, EventArgs e)
+        {
+            UpdatePlanetPositions();
+            DrawPlanets();
+            if (days == 365)
             {
-                Console.WriteLine(so);
+                days = 0;
             }
 
-            Console.WriteLine("TOTAL NUMBER OF SPACE OBJECTS : " + planets.Count());
-            InitializeComponent();
+            days++;
+        }
+
+        #region private methods
+        private void UpdatePlanetPositions()
+        {
+            foreach (SpaceObject spaceObject in _viewModel._solarSystem)
+            {
+                spaceObject.UpdatePosition(days);
+            }
+        }
+
+        private void DrawPlanets()
+        {
+            SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(255, 0, 255));
+            canvasArea.Children.RemoveRange(0, _viewModel._solarSystem.Count);
+            foreach (SpaceObject spaceObject in _viewModel._solarSystem)
+            {
+                Ellipse planet = new Ellipse();
+                planet.Height = 20;
+                planet.Width = 20;
+                planet.Fill = brush;
+                Canvas.SetLeft(planet, spaceObject.GetXPos());
+                Canvas.SetTop(planet, spaceObject.GetYPos());
+                canvasArea.Children.Add(planet);
+            }
+
+            #endregion
 
         }
     }
-    }
+}
 

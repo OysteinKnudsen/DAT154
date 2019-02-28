@@ -23,13 +23,13 @@ namespace EventsAndDelegates
         {
             Console.WriteLine("Encoding video : " + video.Title);
             Thread.Sleep(3000);
-            OnVideoEncoded(); //Fires the event which notifies subscribers
+            OnVideoEncoded(video); //Fires the event which notifies subscribers
             Console.ReadKey();
         }
 
-        public void OnVideoEncoded()
+        public void OnVideoEncoded(Video video)
         {
-            VideoEncodedEvent?.Invoke(this, EventArgs.Empty);
+            VideoEncodedEvent?.Invoke(this, new EventArgs());
         }
 
     }

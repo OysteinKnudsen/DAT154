@@ -13,7 +13,9 @@ namespace EventsAndDelegates
             var video = new Video("SHARK ATTACK!");
             var videoEncoder = new VideoEncoder();
             var mailService = new MailService();
+            var textService = new TextService();
             videoEncoder.VideoEncodedEvent += mailService.OnVideoEncoded;
+            videoEncoder.VideoEncodedEvent += textService.OnVideoEncoded;
             videoEncoder.EncodeVideo(video);
         }
     }
