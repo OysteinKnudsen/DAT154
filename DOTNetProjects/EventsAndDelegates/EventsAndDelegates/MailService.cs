@@ -10,9 +10,9 @@ namespace EventsAndDelegates
     {
 
         //EventHandler
-        public void OnVideoEncoded(Object o, EventArgs e)
+        public void OnVideoEncoded(Object o, VideoEventArgs videoEventArgs)
         {
-            Console.WriteLine("Mail service notified about video encoding, sending mail");
+            Console.WriteLine($"Mail service notified about video encoding of {videoEventArgs.Video.Title}, sending mail");
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace EventsAndDelegates
 {
     class Program
-    {
+    { 
         static void Main(string[] args)
         {
             var video = new Video("SHARK ATTACK!");

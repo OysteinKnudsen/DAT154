@@ -14,7 +14,7 @@ namespace EventsAndDelegates
         // 3. Fire event 
 
 
-        public delegate void VideoEncodedEventHandler(Object soruce, EventArgs args);
+        public delegate void VideoEncodedEventHandler(Object soruce, VideoEventArgs eventArgs);
         public event VideoEncodedEventHandler VideoEncodedEvent;
 
         public VideoEncoder() { }
@@ -29,7 +29,7 @@ namespace EventsAndDelegates
 
         public void OnVideoEncoded(Video video)
         {
-            VideoEncodedEvent?.Invoke(this, new EventArgs());
+            VideoEncodedEvent?.Invoke(this, new VideoEventArgs() { Video = video });
         }
 
     }
