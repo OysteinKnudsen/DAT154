@@ -18,5 +18,10 @@ namespace AppliedSOLID
             Console.ReadLine();
         }
 
+        public static void DisplayValidationErrorFor(string fieldName)
+        {
+            Console.WriteLine($"Invalid {fieldName}");
+        }
+
     }
 }

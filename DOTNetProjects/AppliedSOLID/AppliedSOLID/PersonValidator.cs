@@ -13,15 +13,13 @@ namespace AppliedSOLID
             //Check to see if first and last names are valid
             if (string.IsNullOrWhiteSpace(person.FirstName))
             {
-                Console.WriteLine("Invalid first name");
-                StandardMessages.EndApplication();
+                StandardMessages.DisplayValidationErrorFor(person.FirstName);
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(person.LastName))
             {
-                Console.WriteLine("Invalid last name");
-                StandardMessages.EndApplication();
+                StandardMessages.DisplayValidationErrorFor(person.LastName.ToString());
                 return false;
             }
 

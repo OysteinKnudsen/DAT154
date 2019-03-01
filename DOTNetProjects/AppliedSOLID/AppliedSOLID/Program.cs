@@ -16,22 +16,13 @@ namespace AppliedSOLID
 
             Person user = PersonDataCapture.Capture();
 
+            bool isUserValid = PersonValidator.Validate(user);
 
-            //Check to see if first and last names are valid
-            if (string.IsNullOrWhiteSpace(user.FirstName))
+            if (!isUserValid)
             {
-                Console.WriteLine("Invalid first name");
                 StandardMessages.EndApplication();
                 return;
             }
-
-            if (string.IsNullOrWhiteSpace(user.LastName))
-            {
-                Console.WriteLine("Invalid last name");
-                StandardMessages.EndApplication();
-                return;
-            }
-
 
         }
     }
