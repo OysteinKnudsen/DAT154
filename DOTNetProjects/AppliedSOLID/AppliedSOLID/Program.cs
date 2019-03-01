@@ -14,13 +14,7 @@ namespace AppliedSOLID
             //Ask user for information
             StandardMessages.WelcomeMessage();
 
-            Person user = new Person();
-
-            Console.WriteLine("What is your name?");
-            user.FirstName = Console.ReadLine();
-
-            Console.WriteLine("What is your last name?");
-            user.LastName = Console.ReadLine();
+            Person user = PersonDataCapture.Capture();
 
 
             //Check to see if first and last names are valid
