@@ -1,20 +1,31 @@
 #include "pch.h"
 #include <iostream>
+using namespace std;
 
 #define LOG(X) 
+
 int main()
 {
-
 	int var = 8;
 
-	//Void pointer, a pointer is just an address in memory, does not need a type.
-	//this pointer is not valid, because a memory address cannot be 0, means NULL
-	void* typelessPointer = 0; 
+	//A pointer is just an address in memory.
+	//memory address cannot be 0, means NULL
+	int* pointer = 0; 
+
+	cout<< "pointer: " << pointer << "\n";
 
 	//Assigns the pointer the memory address of var. This is done by using the '&' operator.
-	typelessPointer = &var;
+	pointer = &var;
 
-	std::cin.get();
+	cout << "pointer after assigning memory address of var to it: " << *pointer << "\n";
+
+
+	// Reading/writing to memory
+	*pointer = 5;
+
+	cout << "pointer after *pointer = 5 : " << *pointer << "\n";
+
+	cin.get();
 
 
     std::cout << "Hello World!\n"; 
