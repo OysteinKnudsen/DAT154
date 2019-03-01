@@ -12,7 +12,7 @@ namespace AppliedSOLID
         {
 
             //Ask user for information
-            Console.WriteLine("Welcome to my application");
+            StandardMessages.WelcomeMessage();
 
             Person user = new Person();
 
@@ -27,14 +27,14 @@ namespace AppliedSOLID
             if (string.IsNullOrWhiteSpace(user.FirstName))
             {
                 Console.WriteLine("Invalid first name");
-                Console.ReadLine();
+                StandardMessages.EndApplication();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(user.LastName))
             {
                 Console.WriteLine("Invalid last name");
-                Console.ReadLine();
+                StandardMessages.EndApplication();
                 return;
             }
 
