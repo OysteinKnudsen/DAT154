@@ -21,9 +21,15 @@ int main()
 
 
 	// Reading/writing to memory
+	// Using the '*' as a prefix to the pointer name, we can read/write to that address in memory.
 	*pointer = 5;
 
 	cout << "pointer after *pointer = 5 : " << *pointer << "\n";
+
+	//char = 1 byte of memory. Line below asks for 8 bytes of memory. 
+	//Returns a pointer to the beginning of that memory block. 
+
+	char* buffer = new char[8];
 
 	cin.get();
 

@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{38A383B8-66BC-4DA4-996B-EA21C6611AC6}</ProjectGuid>
+    <ProjectGuid>{902EE025-0D49-4126-A49F-0CE2F3B9A940}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>StockMarket</RootNamespace>
-    <AssemblyName>StockMarket</AssemblyName>
+    <RootNamespace>FunctionPointersDemo</RootNamespace>
+    <AssemblyName>FunctionPointersDemo</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -43,11 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Broker.cs" />
-    <Compile Include="Dex.cs" />
-    <Compile Include="Person.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stock.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
