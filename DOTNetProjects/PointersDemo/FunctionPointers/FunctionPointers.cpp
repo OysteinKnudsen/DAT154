@@ -3,10 +3,22 @@
 
 #include "pch.h"
 #include <iostream>
+#include <vector>;
 using namespace std;
 
 void HelloWorld(int a) {
 	cout << "Hello world, value " << a << "\n";
+}
+
+void PrintValue(int value) {
+	cout << "Value: " << value << "\n";
+}
+
+//Function which takes in a vector of values and a function pointer as parameter
+void ForEach(const vector<int>& values, void(*func)(int)) {
+	for (int value : values) {
+		func(value);
+	}
 }
 
 int main()
@@ -19,15 +31,11 @@ int main()
 
 	functionVariableName(5);
 	functionVariableName(10);
+
+	//Vector of values to be iterated over
+	vector<int> values = { 1, 5,3,20,15,8 };
+
+	//Passes the printvalue function as parameter
+	ForEach(values, PrintValue);
+
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
