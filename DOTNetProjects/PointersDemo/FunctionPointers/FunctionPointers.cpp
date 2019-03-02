@@ -38,4 +38,6 @@ int main()
 	//Passes the printvalue function as parameter
 	ForEach(values, PrintValue);
 
+	//Lambda expression instead of a declared function
+	ForEach(values, [](int value) {cout << "Value: " << value << "\n"; });
 }
